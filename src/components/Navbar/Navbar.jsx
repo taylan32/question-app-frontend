@@ -1,11 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import { LockOpen } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    textAlign:"left"
+    textAlign: "left",
   },
   link: {
     textDecoration: "none",
@@ -26,8 +27,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar() {
-  let userId = 5;
   const classes = useStyles();
+  let history = useHistory()
+  const handleLogout = () => {
+    localStorage.removeItem("tokenKey")
+    localStorage.removeItem("currentUser")
+    localStorage.removeItem("userName")
+    history.push("/")
+    window.location.reload()
+  }
+
   return (
     <nav className={classes.root}>
       <AppBar position="static">
@@ -46,12 +55,25 @@ export default function Navbar() {
             </Link>
           </Typography>
           <Typography variant="h6">
-            <Link
-              to={{ pathname: "/users/" + userId }}
-              className={classes.link}
-            >
-              User
-            </Link>
+            {localStorage.getItem("currentUser") == null ? (
+              <Link to="/auth" className={classes.link}>
+                Login / Register
+              </Link>
+            ) : (
+              <div>
+                <IconButton onClick={ handleLogout}>
+                  <LockOpen></LockOpen>
+                </IconButton>
+                <Link
+                  to={{
+                    pathname: "/users/" + localStorage.getItem("currentUser"),
+                  }}
+                  className={classes.link}
+                >
+                  Profile
+                </Link>
+              </div>
+            )}
           </Typography>
         </Toolbar>
       </AppBar>

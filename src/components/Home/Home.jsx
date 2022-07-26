@@ -38,22 +38,34 @@ export default function Home() {
   }, [posts]);
 
   if (error) {
-    return <div>{"Error message: " + error.message}</div>;
+    return (
+      <div>
+        <ul style={{ listStyle: "none" }}>
+          <li>{error.response?.data.message}</li>
+          <li>{error.response?.data.error}</li>
+          <li>{error.response?.data.status}</li>
+        </ul>
+      </div>
+    );
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
     return (
-      <div  className={classes.container}>
-        <PostForm userName="Taylan" userId={1} refreshPost = {refreshPost} />
+      <div className={classes.container}>
+        { localStorage.getItem("currentUser") == null ? null:<PostForm
+          userName={localStorage.getItem("userName")}
+          userId={localStorage.getItem("currentUser")}
+          refreshPost={refreshPost}
+        />}
         {posts.map((post) => (
           <Post
             title={post.title}
             createdAt={post.createdAt}
             text={post.text}
             userName={post.userName}
-            userId={post.userId}
-            postId = {post.id}
-            key = {post.id}
+            userId={localStorage.getItem("currentUser")}
+            postId={post.id}
+            key={post.id}
           />
         ))}
       </div>

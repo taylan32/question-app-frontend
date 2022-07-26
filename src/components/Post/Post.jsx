@@ -62,6 +62,7 @@ export default function Post(props) {
   const isInitialMount = useRef(true);
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  let disabled = localStorage.getItem("currentUser") == null ? true:false
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -71,10 +72,10 @@ export default function Post(props) {
   const handleLike = () => {
     setIsLiked(!isLiked);
     if (isLiked) {
-      deleteLike()
+      deleteLike();
       setLikeCount(likeCount - 1);
     } else {
-      saveLike()
+      saveLike();
       setLikeCount(likeCount + 1);
     }
   };
@@ -138,8 +139,8 @@ export default function Post(props) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={handleLike}>
-          <FavoriteIcon style={isLiked ? { color: "red" } : null} />
+        <IconButton aria-label="add to favorites" onClick={handleLike} disabled = {disabled}>
+          <FavoriteIcon style={disabled ? null : isLiked ? { color: "red" } : null} />
         </IconButton>
         {likeCount}
         <IconButton
@@ -159,10 +160,16 @@ export default function Post(props) {
             ? "error"
             : isLoaded
             ? comments.map((comment) => (
-                <Comment userId={1} userName="Taylan" text={comment.text} />
+                <Comment
+                  userId={userId}
+                  userName={userName}
+                  text={comment.text}
+                />
               ))
             : "Loading..."}
-          <CommentForm userName="Taylan" userId={1} postId={postId} />
+          {disabled ? null : (
+            <CommentForm userName="Taylan" userId={userId} postId={postId} />
+          )}
         </Container>
       </Collapse>
     </Card>

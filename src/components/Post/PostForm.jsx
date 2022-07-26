@@ -105,8 +105,7 @@ export default function PostForm(props) {
               <Link
                 to={{ pathname: "/users/" + userId }}
                 className={classes.link}
-              >
-                {userName[0].toUpperCase()}
+              > {userName[0].toUpperCase()}        
               </Link>
             </Avatar>
           }
