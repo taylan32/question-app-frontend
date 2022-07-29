@@ -111,9 +111,11 @@ export default function Post(props) {
     getLikeCount(postId).then((result) => {
       setLikeCount(result.data);
     });
-    checkIfUserLikedPost(userId, postId).then((result) => {
-      setIsLiked(result.data);
-    });
+    if(localStorage.getItem("currentUser") != null) {
+      checkIfUserLikedPost(userId, postId).then((result) => {
+        setIsLiked(result.data);
+      });
+    }
   }, [comments]);
 
   return (
@@ -161,8 +163,8 @@ export default function Post(props) {
             : isLoaded
             ? comments.map((comment) => (
                 <Comment
-                  userId={userId}
-                  userName={userName}
+                  userId={comment.userId}
+                  userName={comment.userName}
                   text={comment.text}
                 />
               ))

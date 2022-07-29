@@ -63,7 +63,7 @@ export default function Home() {
             createdAt={post.createdAt}
             text={post.text}
             userName={post.userName}
-            userId={localStorage.getItem("currentUser")}
+            userId={post.userId}
             postId={post.id}
             key={post.id}
           />

@@ -7,3 +7,7 @@ export const getAllPosts = () => {
 export const createPost = (values) => {
     return axios.post('/api/posts/', values, {headers: {"Authorization":localStorage.getItem("tokenKey")}})
 }
+
+export const getPostById = (postId) => {
+    return axios.get(`/api/posts/${postId}`)
+}
