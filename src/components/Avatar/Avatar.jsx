@@ -49,7 +49,9 @@ export default function Avatar(props) {
   const saveAvatar = () => {
     changeAvatar(userId, selectedValue).catch((error) => {
       if(error == "Unauthorized") {
-        refreshToken(userId, localStorage.getItem("refreshKey"))
+        refreshToken(userId, localStorage.getItem("refreshKey")).then((result) => {
+          localStorage.setItem("tokenKey", result.data.accessToken)
+        })
       }
     })
   };

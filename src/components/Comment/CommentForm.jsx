@@ -48,6 +48,8 @@ export default function CommentForm(props) {
       if(error == "Unauthorized") {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
+    }).then((result) => {
+      localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
   const handleText = (value) => {

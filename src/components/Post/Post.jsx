@@ -88,6 +88,8 @@ export default function Post(props) {
       if(error == "Unauthorized") {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
+    }).then((result) => {
+      localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
   const deleteLike = () => {
@@ -95,6 +97,8 @@ export default function Post(props) {
       if(error == "Unauthorized") {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
+    }).then((result) => {
+      localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
 
@@ -112,6 +116,8 @@ export default function Post(props) {
       if(error == "Unauthorized") {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
+    }).then((result) => {
+      localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
 

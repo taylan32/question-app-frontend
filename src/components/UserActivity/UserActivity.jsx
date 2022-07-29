@@ -127,6 +127,8 @@ export default function UserActivity(props) {
       if(error == "Unauthorized") {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
+    }).then((result) => {
+      localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
 
