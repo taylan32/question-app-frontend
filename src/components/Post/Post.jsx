@@ -22,6 +22,7 @@ import {
 import { Container } from "@material-ui/core";
 import Comment from "../Comment/Comment";
 import CommentForm from "../Comment/CommentForm";
+import { refreshToken } from "../../requests/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,10 +84,18 @@ export default function Post(props) {
     likePost({
       userId: userId,
       postId: postId,
-    });
+    }).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
   const deleteLike = () => {
-    removeLike(userId, postId);
+    removeLike(userId, postId).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
 
   const refreshComments = () => {
@@ -99,7 +108,11 @@ export default function Post(props) {
         setError(error);
         setIsLoaded(true);
       }
-    );
+    ).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
 
   useEffect(() => {

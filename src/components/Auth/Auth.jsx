@@ -31,9 +31,10 @@ export default function Auth() {
       path
     ).then((result) => {
       console.log(result);
-      localStorage.setItem("tokenKey", result.data.message);
+      localStorage.setItem("tokenKey", result.data.accessToken);
       localStorage.setItem("currentUser", result.data.userId);
       localStorage.setItem("userName", userName);
+      localStorage.setItem("refreshKey", result.data.refreshToken)
     });
   };
 

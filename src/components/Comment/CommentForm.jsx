@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { createComment } from "../../requests/commentRequest";
+import { refreshToken } from "../../requests/auth";
 
 const useStyles = makeStyles((theme) => ({
   comment: {
@@ -43,7 +44,11 @@ export default function CommentForm(props) {
       userId: userId,
       postId: postId,
       text: text,
-    });
+    }).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
   const handleText = (value) => {
     setText(value);

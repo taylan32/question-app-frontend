@@ -12,6 +12,7 @@ import { Button, InputAdornment, OutlinedInput } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { createPost } from "../../requests/postRequest";
+import { refreshToken } from "../../requests/auth";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -70,7 +71,11 @@ export default function PostForm(props) {
     }).then((result) => {
       setIsSuccess(result.data.isSuccess);
       setCreateMessage(result.data.message);
-    });
+    }).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey") )
+      }
+    })
   };
   const handleSubmit = () => {
     savePost();

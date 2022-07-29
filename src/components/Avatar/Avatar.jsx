@@ -14,6 +14,7 @@ import {
   Radio,
 } from "@material-ui/core";
 import { changeAvatar } from "../../requests/userRequests";
+import { refreshToken } from "../../requests/auth";
 
 const useStyles = makeStyles({
   root: {
@@ -46,7 +47,11 @@ export default function Avatar(props) {
   };
 
   const saveAvatar = () => {
-    changeAvatar(userId, selectedValue);
+    changeAvatar(userId, selectedValue).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
 
   return (

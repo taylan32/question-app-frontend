@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { refreshToken } from "../../requests/auth";
 import { getUserById } from "../../requests/userRequests";
 import Avatar from "../Avatar/Avatar";
 import UserActivity from "../UserActivity/UserActivity";
@@ -11,6 +12,10 @@ export default function User() {
   const getUser = () => {
     getUserById(userId).then((result) => {
       setUser(result.data.data)
+    }).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
     })
   }
 

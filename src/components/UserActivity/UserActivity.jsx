@@ -14,18 +14,13 @@ import {
   AppBar,
   Button,
   IconButton,
+  TableCell,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import Post from "../Post/Post";
 import { getPostById } from "../../requests/postRequest";
-const columns = [
-  {
-    id: "User Activity",
-    label: "User Activity",
-    align: "left",
-  },
-];
+import { refreshToken } from "../../requests/auth";
 
 const useStyles = makeStyles({
   root: {
@@ -45,12 +40,11 @@ const useStyles = makeStyles({
     border: 0,
   },
   appBar: {
-    position:"relative"
+    position: "relative",
   },
   title: {
-
-    flex:1
-  }
+    flex: 1,
+  },
 });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -66,7 +60,7 @@ function PopUp(props) {
   const getPost = () => {
     getPostById(postId).then((result) => {
       setPost(result.data.data);
-    });
+    })
   };
 
   useEffect(() => {
@@ -76,13 +70,10 @@ function PopUp(props) {
   useEffect(() => {
     getPost();
   }, [postId]);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
-    setIsOpen(false)
+    setIsOpen(false);
   };
 
   return post != null ? (
@@ -132,7 +123,11 @@ export default function UserActivity(props) {
     getUserActivity(userId).then((result) => {
       setIsLoaded(true);
       setRows(result.data.data);
-    });
+    }).catch((error) => {
+      if(error == "Unauthorized") {
+        refreshToken(userId, localStorage.getItem("refreshKey"))
+      }
+    })
   };
 
   const handleNotification = (id) => {
@@ -146,7 +141,11 @@ export default function UserActivity(props) {
 
   return (
     <div>
-      {isOpen ? <PopUp isOpen={isOpen} postId={selectedPost} setIsOpen={setIsOpen} /> : ""}
+      {isOpen ? (
+        <PopUp isOpen={isOpen} postId={selectedPost} setIsOpen={setIsOpen} />
+      ) : (
+        ""
+      )}
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
@@ -161,7 +160,9 @@ export default function UserActivity(props) {
                     onClick={() => handleNotification(row[1])}
                   >
                     <TableRow role="checkbox" tabIndex={-1} key={row.code}>
-                      {row[3] + " " + row[0] + " your post"}
+                      <TableCell>
+                        {row[3] + " " + row[0] + " your post"}
+                      </TableCell>
                     </TableRow>
                   </Button>
                 );
