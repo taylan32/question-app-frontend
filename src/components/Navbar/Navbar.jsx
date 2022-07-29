@@ -33,6 +33,7 @@ export default function Navbar() {
     localStorage.removeItem("tokenKey")
     localStorage.removeItem("currentUser")
     localStorage.removeItem("userName")
+    localStorage.removeItem("refreshKey")
     history.push("/")
     window.location.reload()
   }

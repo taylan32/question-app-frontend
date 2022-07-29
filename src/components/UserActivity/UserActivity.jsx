@@ -128,7 +128,7 @@ export default function UserActivity(props) {
         refreshToken(userId, localStorage.getItem("refreshKey"))
       }
     }).then((result) => {
-      localStorage.setItem("tokenKey", result.data.accessToken)
+      //localStorage.setItem("tokenKey", result.data.accessToken)
     })
   };
 

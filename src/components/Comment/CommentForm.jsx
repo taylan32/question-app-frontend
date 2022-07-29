@@ -7,7 +7,7 @@ import {
   InputAdornment,
   OutlinedInput,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { createComment } from "../../requests/commentRequest";
 import { refreshToken } from "../../requests/auth";
 
@@ -37,6 +37,7 @@ export default function CommentForm(props) {
   const { userId, userName, postId } = props;
   const classes = useStyles();
 
+  let history = useHistory();
   const [text, setText] = useState("");
 
   const saveComment = () => {
@@ -45,18 +46,33 @@ export default function CommentForm(props) {
       postId: postId,
       text: text,
     }).catch((error) => {
-      if(error == "Unauthorized") {
-        refreshToken(userId, localStorage.getItem("refreshKey"))
+      if (error.response.data.error == "Unauthorized") {
+        refreshToken({
+          userId: userId,
+          refreshToken: localStorage.getItem("refreshKey"),
+        })
+          .then((result) => {
+            localStorage.setItem("tokenKey", result.data.accessToken); 
+            createComment({
+              userId: userId,
+              postId: postId,
+              text: text,
+            }).catch((error) => {
+              if (error.response.data.error == "Unauthorized") {
+                localStorage.clear();
+                window.location.replace("/auth")
+              }
+            })
+          })
+
       }
-    }).then((result) => {
-      localStorage.setItem("tokenKey", result.data.accessToken)
-    })
+    });
   };
   const handleText = (value) => {
     setText(value);
   };
   const handleSubmit = () => {
-    saveComment()
+    saveComment();
     setText("");
   };
 
@@ -66,7 +82,7 @@ export default function CommentForm(props) {
         id="outlined-adornment-amount"
         multiline
         fullWidth
-        value= {text}
+        value={text}
         inputProps={{ maxLength: 250 }}
         onChange={(input) => handleText(input.target.value)}
         startAdornment={
